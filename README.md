@@ -1,5 +1,5 @@
-# docker-verthashminer
-[![Docker Image CI](https://github.com/Migz93/docker-verthashminer/actions/workflows/main.yml/badge.svg)](https://github.com/Migz93/docker-verthashminer/actions/workflows/main.yml)  
+# verthashminer-docker
+[![Docker Image CI](https://github.com/Migz93/verthashminer-docker/actions/workflows/main.yml/badge.svg)](https://github.com/Migz93/verthashminer-docker/actions/workflows/main.yml)  
 Basic dockerized version of [VerthashMiner](https://github.com/CryptoGraphics/VerthashMiner)
 
 Container will generate a new verthash.dat file if it does not already exist at /config/verthash.dat.  
@@ -14,7 +14,7 @@ This release is running the VerthashMiner v0.7.2 release.
 
 ```bash
 docker run -d \
-  --name=docker-verthashminer \
+  --name=verthashminer-docker \
   --runtime=nvidia \
   -e ALGO=verthash \
   -e URL=stratum+tcp://vtc.acidpool.co.uk:3052 \
@@ -23,12 +23,12 @@ docker run -d \
   -e NVIDIA_VISIBLE_DEVICES=YOURGPUID \
   -v /path/to/data:/config \
   --restart unless-stopped \
-   miguel1993/docker-verthashminer
+   miguel1993/verthashminer-docker
 ```
 ## Using iGPU (Untested)
 ```bash
 docker run -d \
-  --name=docker-verthashminer \
+  --name=verthashminer-docker \
   --device /dev/dri \
   -e ALGO=verthash \
   -e URL=stratum+tcp://vtc.acidpool.co.uk:3052 \
@@ -36,7 +36,7 @@ docker run -d \
   -e PASS=x \
   -v /path/to/data:/config \
   --restart unless-stopped \
-   miguel1993/docker-verthashminer
+   miguel1993/verthashminer-docker
 ```
 
 # Parameters
