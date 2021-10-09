@@ -4,7 +4,7 @@ RUN mkdir /app
 COPY VerthashMiner-Launcher.bash /app
 RUN \
  apt-get update && \
- apt-get install -y wget ocl-icd-opencl-dev nvidia-cuda-toolkit && \
+ apt-get install -y wget ocl-icd-libopencl1 opencl-headers clinfo ocl-icd-opencl-dev nvidia-cuda-toolkit && \
  apt-get autoremove && \
  apt-get clean && \
  rm -rf \
