@@ -21,7 +21,7 @@ jobs:
       run: |
         docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag miguel1993/docker-verthashminer miguel1993/docker-verthashminer:v0.7.2
+      run: docker build . --file Dockerfile --tag miguel1993/docker-verthashminer --tag miguel1993/docker-verthashminer:v0.7.2
     - name: Docker Push
       run: docker push ${{secrets.DOCKER_USER}}/docker-verthashminer
     - name: Docker Push
