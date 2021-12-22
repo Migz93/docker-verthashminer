@@ -2,14 +2,11 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
 
 jobs:
 
-  build:
-
+  latest:
+    if: "contains(github.ref, 'master') || contains(github.ref, 'main')"
     runs-on: ubuntu-latest
 
     steps:
@@ -20,9 +17,34 @@ jobs:
         DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
       run: |
         docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+    - name: Get Repository Name
+      run: echo "REPOSITORY_NAME=$(echo '${{ github.repository }}' | awk -F '/' '{print $2}')" >> $GITHUB_ENV
+      shell: bash
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag ${{secrets.DOCKER_USER}}/verthashminer-docker --tag ${{secrets.DOCKER_USER}}/verthashminer-docker:v0.7.2
-    - name: Docker Push
-      run: docker push ${{secrets.DOCKER_USER}}/verthashminer-docker
-    - name: Docker Push
-      run: docker push ${{secrets.DOCKER_USER}}/verthashminer-docker:v0.7.2
+      run: docker build . --file Dockerfile --tag ${{secrets.DOCKER_USER}}/$REPOSITORY_NAME:$GITHUB_REF_NAME-$GITHUB_SHA --tag ${{secrets.DOCKER_USER}}/$REPOSITORY_NAME:latest
+    - name: Docker Push SHA
+      run: docker push ${{secrets.DOCKER_USER}}/$REPOSITORY_NAME:$GITHUB_REF_NAME-$GITHUB_SHA
+    - name: Docker Push Latest
+      run: docker push ${{secrets.DOCKER_USER}}/$REPOSITORY_NAME:latest
+
+  other:
+    if: "!contains(github.ref, 'master') && !contains(github.ref, 'main')"
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    - name: docker login
+      env:
+        DOCKER_USER: ${{secrets.DOCKER_USER}}
+        DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
+      run: |
+        docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+    - name: Get Repository Name
+      run: echo "REPOSITORY_NAME=$(echo '${{ github.repository }}' | awk -F '/' '{print $2}')" >> $GITHUB_ENV
+      shell: bash
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag ${{secrets.DOCKER_USER}}/$REPOSITORY_NAME:$GITHUB_REF_NAME-$GITHUB_SHA --tag ${{secrets.DOCKER_USER}}/$REPOSITORY_NAME:$GITHUB_REF_NAME
+    - name: Docker Push SHA
+      run: docker push ${{secrets.DOCKER_USER}}/$REPOSITORY_NAME:$GITHUB_REF_NAME-$GITHUB_SHA
+    - name: Docker Push Branch
+      run: docker push ${{secrets.DOCKER_USER}}/$REPOSITORY_NAME:$GITHUB_REF_NAME
